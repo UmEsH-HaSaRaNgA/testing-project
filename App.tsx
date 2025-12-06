@@ -1,11 +1,8 @@
-
 import React, { useRef, useState } from 'react';
 import BirthdayCard from './components/BirthdayCard';
 import Editor from './components/Editor';
 import { useCardState } from './hooks/useCardState';
-
-// Define html2canvas type, as we are loading it from CDN
-declare const html2canvas: any;
+import html2canvas from 'html2canvas';
 
 const DownloadIcon: React.FC = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +36,6 @@ export default function App() {
       await document.fonts.ready;
 
       // 2. Pre-process images to DataURLs to bypass CORS issues in html2canvas
-      // This is the most reliable way to ensure remote images (like github backgrounds) render.
       const images = Array.from(cardRef.current.querySelectorAll('img')) as HTMLImageElement[];
       const originalSrcs = images.map(img => img.src);
 
@@ -68,21 +64,18 @@ export default function App() {
            });
         } catch (e) {
           console.warn("Failed to load image via fetch:", url, e);
-          // Determine if we should fail hard or fallback
-          throw e; // Throwing error to alert user instead of silently failing
+          throw e; 
         }
       };
 
       // Swap sources
       await Promise.all(images.map(async (img) => {
-        // Only attempt to proxy if it's not already a data URL or blob
         if (img.src.startsWith('http')) {
             try {
               const newSrc = await getBase64Image(img.src);
               img.src = newSrc;
             } catch (err) {
               console.error(`Could not process image ${img.src}:`, err);
-              // We continue, but the image might be blank or cause a taint error
             }
         }
       }));
@@ -92,9 +85,8 @@ export default function App() {
 
       const canvas = await html2canvas(cardRef.current, {
         useCORS: true,
-        scale: 2, // for better resolution
+        scale: 2, 
         backgroundColor: null,
-        // Logging helps debugging in console
         logging: true,
       });
 
@@ -112,7 +104,6 @@ export default function App() {
       document.body.removeChild(link);
     } catch (error: any) {
       console.error("Error generating image:", error);
-      // Show specific error message
       alert(`Error generating download: ${error.message || error}`);
     } finally {
       setIsDownloading(false);
