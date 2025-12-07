@@ -20,3 +20,5 @@ export interface CardData {
   backgroundImageUrl: string;
   decorations: Decorations;
 }
+
+
