@@ -1,5 +1,5 @@
 {
-  "name": "copy Birthday Card Generator last",
+  "name": "testing-project",
   "description": "A web application that allows users to create and customize a beautiful birthday card. Users can edit all text fields, upload their own photo, and download the final card as an image.",
   "requestFramePermissions": []
 }
