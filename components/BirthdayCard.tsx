@@ -1,4 +1,3 @@
-
 import React, { forwardRef, useState } from 'react';
 import { CardData } from '../types';
 
@@ -11,16 +10,14 @@ const BirthdayCard = forwardRef<HTMLDivElement, BirthdayCardProps>((props, ref) 
   } = props;
 
   const [bgError, setBgError] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <div 
       ref={ref} 
-      className="w-full h-full flex flex-col relative overflow-hidden bg-transparent"
-      style={{ 
-        textShadow: '0 2px 4px rgba(0,0,0,0.8)', // Strong text shadow for visibility
-        fontVariant: 'normal',
-        letterSpacing: 'normal' 
-      }} 
+      className="w-full h-full flex flex-col relative overflow-hidden box-border"
+      // Force background color to prevent transparent rendering issues
+      style={{ backgroundColor: '#0f172a' }}
     >
       {/* Layer 1: Background Image */}
       <div className="absolute inset-0 z-0">
@@ -35,45 +32,60 @@ const BirthdayCard = forwardRef<HTMLDivElement, BirthdayCardProps>((props, ref) 
         ) : (
           <div className="w-full h-full bg-slate-900"></div> 
         )}
-        {/* Overlay to ensure text readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none"></div>
       </div>
 
       {/* Layer 2: All Content Wrapper */}
-      {/* Removed drop-shadow classes as they break html2canvas text rendering */}
-      <div className="relative z-10 w-full h-full flex flex-col justify-between p-8" style={{ color: '#FFFFFF' }}>
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center gap-6 p-6" style={{ color: '#FFFFFF' }}>
         
         {/* Top Text Section */}
-        <div className="text-center pt-4">
-          <p className="text-yellow-400 text-sm tracking-widest uppercase">{greeting}</p>
-          <h1 className="text-5xl font-['Satisfy'] text-white my-2">{mainEvent}</h1>
-          <p className="inline-block bg-blue-500 px-6 py-2 rounded-lg shadow-lg font-bold text-2xl text-white my-2 uppercase">{name}</p>
+        <div className="text-center flex flex-col items-center w-full">
+          <p className="text-yellow-400 text-sm tracking-widest uppercase whitespace-nowrap leading-tight">{greeting}</p>
+          <h1 className="text-5xl font-['Satisfy'] text-white my-1 whitespace-nowrap leading-tight" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{mainEvent}</h1>
+          
+          {/* Name Box - Clean flat design without complex shadows */}
+          <div className="mt-2 flex justify-center w-full">
+            <div className="bg-blue-500 px-6 py-2 rounded-lg min-w-[120px] flex items-center justify-center border-2 border-blue-400">
+              <span className="font-bold text-2xl text-white uppercase whitespace-nowrap leading-none pt-1">{name}</span>
+            </div>
+          </div>
         </div>
 
         {/* Center Image Section */}
-        <div className="flex justify-center items-center my-4">
-          <div className="p-2 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full shadow-2xl">
-            <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden bg-gray-200">
-               <img 
-                src={imageUrl} 
-                alt={name} 
-                crossOrigin="anonymous"
-                className="w-full h-full object-cover" 
-               />
+        <div className="flex justify-center items-center flex-shrink-0">
+          {/* Clean Border Design */}
+          <div className="p-2 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full border border-yellow-200">
+            <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center relative">
+               {!imgError ? (
+                 <img 
+                  src={imageUrl} 
+                  alt={name} 
+                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover" 
+                  onError={() => setImgError(true)}
+                 />
+               ) : (
+                 <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500 text-xs">No Image</div>
+               )}
             </div>
           </div>
         </div>
 
         {/* Bottom Text Section */}
-        <div className="text-center space-y-2 pb-4">
-          <p className="text-gray-200 text-sm font-light uppercase tracking-wide">{bestWishes}</p>
-          <p className="font-bold text-lg tracking-wide uppercase">{recipientLine1}</p>
-          <p className="text-gray-300 text-xs">{recipientLine2}</p>
-          <p className="text-yellow-400 text-4xl font-['Satisfy'] py-1">{cheers}</p>
-          <div className="inline-block px-5 py-1 bg-yellow-500 rounded-full text-black text-sm font-semibold shadow-md" style={{ textShadow: 'none' }}>
-            {batch}
+        <div className="text-center flex flex-col items-center w-full space-y-2">
+          <p className="text-gray-200 text-sm font-light uppercase tracking-wide whitespace-nowrap">{bestWishes}</p>
+          <p className="font-bold text-lg tracking-wide uppercase whitespace-nowrap leading-tight">{recipientLine1}</p>
+          <p className="text-gray-300 text-xs whitespace-nowrap">{recipientLine2}</p>
+          <p className="text-yellow-400 text-4xl font-['Satisfy'] py-1 whitespace-nowrap leading-tight" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{cheers}</p>
+          
+          {/* Batch Box - Clean Border Design */}
+          <div className="mt-1 flex justify-center w-full">
+             <div className="px-5 py-1.5 bg-yellow-500 rounded-full whitespace-nowrap min-w-[80px] flex items-center justify-center border border-yellow-400">
+                <span className="text-black text-sm font-semibold leading-none pt-[1px]">{batch}</span>
+             </div>
           </div>
-          <p className="text-gray-400 text-[10px] tracking-widest uppercase mt-4">{department}</p>
+
+          <p className="text-gray-400 text-[10px] tracking-widest uppercase mt-4 whitespace-nowrap">{department}</p>
         </div>
 
       </div>
